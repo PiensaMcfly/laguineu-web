@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Editor La Guineu</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/grapesjs@0.23.6/dist/css/grapes.min.css" integrity="sha384-ipHR7uZK8wuUZWD8zZ09XYemZDqShtJpYjZibAX8L1f5rAUb4W78/j43sKG32Ip4" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gjs-primary-color: #1f2d27;
+      --gjs-secondary-color: #e7e5e4;
+      --gjs-tertiary-color: #38b000;
+      --gjs-quaternary-color: #e9a825;
+      --gjs-font-color: #e7e5e4;
+      --gjs-font-color-active: #ffffff;
+      --gjs-main-font: 'Plus Jakarta Sans', sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; font-family: var(--gjs-main-font); background: #14201b; }
+    #app { display: grid; grid-template-columns: 270px 1fr 310px; grid-template-rows: 52px 1fr; height: 100vh; }
+    #topbar { grid-column: 1 / -1; display: flex; align-items: center; gap: 6px; padding: 0 12px; background: #123124; color: #fff; border-bottom: 1px solid rgba(255,255,255,.12); overflow-x: auto; }
+    #topbar .brand { font-weight: 800; margin-right: 14px; white-space: nowrap; }
+    #topbar .brand small { color: #e9a825; font-weight: 600; margin-left: 6px; }
+    #topbar .sep { width: 1px; height: 24px; background: rgba(255,255,255,.18); margin: 0 6px; }
+    #topbar .spacer { flex: 1; }
+    .btn { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,.08); color: #fff; border: 1px solid rgba(255,255,255,.14); border-radius: 8px; padding: 7px 11px; font: 600 12.5px var(--gjs-main-font); cursor: pointer; white-space: nowrap; }
+    .btn:hover { background: rgba(255,255,255,.18); }
+    .btn.active { background: #38b000; border-color: #38b000; }
+    .btn.primary { background: #38b000; border-color: #38b000; }
+    .btn.primary:hover { background: #2f9700; }
+    #status { font-size: 12px; color: #a8c7b5; white-space: nowrap; margin-right: 8px; }
+    #left, #right { background: var(--gjs-primary-color); color: var(--gjs-font-color); overflow-y: auto; min-height: 0; }
+    #left { border-right: 1px solid rgba(255,255,255,.1); }
+    #right { border-left: 1px solid rgba(255,255,255,.1); }
+    #gjs { min-height: 0; min-width: 0; }
+    .panel-title { padding: 12px 14px 6px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #e9a825; font-weight: 800; }
+    .hint { margin: 4px 12px 8px; padding: 10px 12px; font-size: 12px; line-height: 1.5; background: rgba(255,255,255,.07); border-radius: 10px; }
+    .hint b { color: #fff; }
+    .tabs { display: flex; position: sticky; top: 0; z-index: 5; background: var(--gjs-primary-color); border-bottom: 1px solid rgba(255,255,255,.1); }
+    .tabs button { flex: 1; padding: 12px 6px; background: none; border: 0; border-bottom: 3px solid transparent; color: #a8a29e; font: 700 12.5px var(--gjs-main-font); cursor: pointer; }
+    .tabs button.active { color: #fff; border-bottom-color: #38b000; }
+    #selectors { display: none; }
+    #layers, #quick { display: none; }
+    .qk-empty { margin: 14px; padding: 14px; font-size: 13px; line-height: 1.5; background: rgba(255,255,255,.07); border-radius: 10px; }
+    .qk-head { display: flex; flex-direction: column; gap: 2px; padding: 14px 14px 6px; }
+    .qk-head span { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #a8a29e; font-weight: 700; }
+    .qk-head b { font-size: 17px; color: #fff; }
+    .qk-card { margin: 8px 12px; padding: 12px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); border-radius: 12px; }
+    .qk-title { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; font-weight: 800; color: #e9a825; margin-bottom: 10px; }
+    .qk-card label { display: block; font-size: 12.5px; font-weight: 600; margin: 10px 0 5px; }
+    .qk-card label.qk-check { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+    .qk-card input[type=text], .qk-card input[type=url], .qk-card select { width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,.2); background: rgba(0,0,0,.25); color: #fff; font: 13px var(--gjs-main-font); }
+    .qk-card input[type=color] { width: 100%; height: 38px; padding: 2px; border-radius: 8px; border: 1px solid rgba(255,255,255,.2); background: rgba(0,0,0,.25); cursor: pointer; }
+    .qk-card input[type=range] { width: 100%; accent-color: #38b000; }
+    .qk-card small { display: block; margin-top: 8px; font-size: 11.5px; color: #a8a29e; line-height: 1.4; }
+    .qk-thumb { display: block; width: 100%; height: 110px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; background: #000; }
+    .qk-btn { width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px; border-radius: 9px; border: 0; background: #38b000; color: #fff; font: 700 13px var(--gjs-main-font); cursor: pointer; }
+    .qk-btn:hover { background: #2f9700; }
+    .qk-btn.sec { background: rgba(255,255,255,.12); font-weight: 600; margin-top: 8px; }
+    .qk-btn.sec:hover { background: rgba(255,255,255,.2); }
+    .qk-btn.danger { background: rgba(217,79,79,.25); }
+    .qk-btn.danger:hover { background: rgba(217,79,79,.5); }
+    .qk-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .qk-link { background: none; border: 0; color: #e9a825; font: 600 12px var(--gjs-main-font); cursor: pointer; padding: 8px 0 0; text-decoration: underline; }
+    .font-list { max-height: 250px; overflow-y: auto; border-radius: 8px; background: rgba(0,0,0,.2); }
+    .font-grp { position: sticky; top: 0; padding: 5px 10px; font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; background: #2a3a33; color: #a8a29e; font-weight: 800; }
+    .font-item { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; width: 100%; text-align: left; padding: 8px 10px; border: 0; border-bottom: 1px solid rgba(255,255,255,.06); background: none; color: #f5f5f4; font-size: 16px; cursor: pointer; }
+    .font-item:hover { background: rgba(56,176,0,.18); }
+    .font-item.on { background: #38b000; color: #fff; }
+    .font-item small { margin: 0; font: 600 10.5px var(--gjs-main-font); color: inherit; opacity: .65; white-space: nowrap; }
+    details.adv { margin: 8px 12px 16px; background: rgba(255,255,255,.04); border-radius: 12px; padding: 4px 12px; }
+    details.adv summary { cursor: pointer; padding: 8px 0; font-size: 12.5px; font-weight: 700; color: #a8a29e; }
+    .gjs-blocks-c { display: grid !important; grid-template-columns: 1fr 1fr; gap: 8px; padding: 8px 10px 14px; }
+    .gjs-block { width: auto !important; min-height: 84px !important; margin: 0 !important; padding: 10px 6px !important; border: 1px solid rgba(255,255,255,.12) !important; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; box-shadow: none !important; }
+    .gjs-block:hover { border-color: #38b000 !important; background: rgba(56,176,0,.12); }
+    .gjs-block__media i { font-size: 22px; color: #e9a825; margin-bottom: 6px; display: block; }
+    .gjs-block-label { font-size: 12px; font-weight: 600; line-height: 1.2; }
+    .gjs-block-category .gjs-title { font-size: 12px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
+    .gjs-toolbar-item { font-size: 13px; }
+    .gjs-sm-sector-title, .gjs-layer-title { font-weight: 700; }
+    .gjs-field input, .gjs-field select { font-family: var(--gjs-main-font); }
+    .btn.add { background: #e9a825; border-color: #e9a825; color: #1c1917; font-weight: 800; }
+    .btn.add:hover { background: #f2b93d; }
+    .btn.add.big { width: calc(100% - 24px); margin: 4px 12px 10px; justify-content: center; padding: 12px; font-size: 14px; }
+    .tpl-mini { width: 100%; }
+    .tpl-mini svg, .tpl-thumb svg { display: block; width: 100%; height: auto; border-radius: 8px; }
+    .gjs-block__media { width: 100%; }
+    #tpl-modal, #pub-modal, #ver-modal, #login-modal { position: fixed; inset: 0; background: rgba(10,18,14,.72); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    #tpl-modal[hidden], #pub-modal[hidden], #ver-modal[hidden], #login-modal[hidden] { display: none; }
+    #login-modal { background: #14201b; }
+    .ver-list { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; max-height: 50vh; overflow-y: auto; }
+    .ver-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; background: rgba(255,255,255,.06); border-radius: 10px; }
+    .ver-row b { display: block; font-size: 13.5px; }
+    .ver-row small { color: #a8a29e; }
+    .ver-row .btn { margin: 0; }
+    .pub-body { padding: 16px 20px 20px; font-size: 13.5px; line-height: 1.5; overflow-y: auto; }
+    .pub-body p { margin: 0 0 12px; }
+    .pub-body a { color: #e9a825; }
+    .pub-body label { display: block; font-weight: 700; margin: 14px 0 6px; }
+    .pub-body input { width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,.2); background: rgba(0,0,0,.25); color: #fff; font: 13px var(--gjs-main-font); }
+    .pub-body details { margin: 12px 0; background: rgba(255,255,255,.06); border-radius: 10px; padding: 10px 12px; }
+    .pub-body summary { cursor: pointer; font-weight: 700; }
+    .pub-body ol { margin: 8px 0 0; padding-left: 20px; }
+    .pub-body .btn { margin-top: 14px; }
+    #pub-msg { margin-top: 12px; font-weight: 600; }
+    #pub-msg.err { color: #ff8a80; }
+    #pub-msg.ok { color: #7bd88f; }
+    .tpl-box { width: min(1040px, 100%); max-height: 100%; display: flex; flex-direction: column; background: #1f2d27; color: #e7e5e4; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,.5); overflow: hidden; }
+    .tpl-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,.1); }
+    .tpl-head h2 { margin: 0; font-size: 18px; }
+    .tpl-head button { background: none; border: 0; color: #e7e5e4; font-size: 20px; cursor: pointer; }
+    .tpl-filters { display: flex; gap: 8px; padding: 12px 20px; flex-wrap: wrap; }
+    .tpl-filters button { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); color: #e7e5e4; border-radius: 999px; padding: 6px 14px; font: 600 12.5px var(--gjs-main-font); cursor: pointer; }
+    .tpl-filters button.active { background: #38b000; border-color: #38b000; color: #fff; }
+    .tpl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; padding: 6px 20px 18px; overflow-y: auto; }
+    .tpl-card { text-align: left; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.12); border-radius: 12px; padding: 10px; color: inherit; cursor: pointer; font-family: var(--gjs-main-font); display: flex; flex-direction: column; gap: 6px; }
+    .tpl-card:hover { border-color: #38b000; background: rgba(56,176,0,.12); }
+    .tpl-card b { font-size: 13.5px; }
+    .tpl-card span { font-size: 12px; color: #a8a29e; line-height: 1.35; }
+    .tpl-foot { padding: 12px 20px; font-size: 12.5px; color: #e9a825; border-top: 1px solid rgba(255,255,255,.1); }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <header id="topbar">
+      <div class="brand"><i class="fa-solid fa-tree" style="color:#38b000"></i> Editor La Guineu <small>prototipo</small></div>
+      <button class="btn add" id="b-add" title="Agregar una sección nueva"><i class="fa-solid fa-plus"></i> Agregar sección</button>
+      <div class="sep"></div>
+      <button class="btn" id="b-undo" title="Deshacer"><i class="fa-solid fa-rotate-left"></i> Deshacer</button>
+      <button class="btn" id="b-redo" title="Rehacer"><i class="fa-solid fa-rotate-right"></i> Rehacer</button>
+      <div class="sep"></div>
+      <button class="btn active" id="d-Escritorio" data-device="Escritorio" title="Vista de escritorio"><i class="fa-solid fa-desktop"></i></button>
+      <button class="btn" id="d-Tablet" data-device="Tablet" title="Vista de tablet"><i class="fa-solid fa-tablet-screen-button"></i></button>
+      <button class="btn" id="d-Móvil" data-device="Móvil" title="Vista de celular"><i class="fa-solid fa-mobile-screen"></i></button>
+      <button class="btn active" id="b-outline" title="Mostrar/ocultar contornos"><i class="fa-regular fa-square"></i> Contornos</button>
+      <div class="spacer"></div>
+      <span id="status">Cargando…</span>
+      <button class="btn" id="b-reset" title="Volver a la última versión publicada"><i class="fa-solid fa-arrow-rotate-left"></i> Descartar cambios</button>
+      <button class="btn" id="b-preview"><i class="fa-solid fa-eye"></i> Vista previa</button>
+      <button class="btn" id="b-download" title="Guardar una copia en tu computadora"><i class="fa-solid fa-download"></i> Descargar</button>
+      <button class="btn" id="b-versions" title="Ver y recuperar versiones anteriores"><i class="fa-solid fa-clock-rotate-left"></i> Versiones</button>
+      <button class="btn primary" id="b-publish" title="Publicar los cambios en el sitio"><i class="fa-solid fa-cloud-arrow-up"></i> Publicar</button>
+      <button class="btn" id="b-logout" title="Cerrar sesión"><i class="fa-solid fa-right-from-bracket"></i></button>
+    </header>
+
+    <aside id="left">
+      <div class="panel-title">Secciones</div>
+      <button class="btn add big" id="b-add-left"><i class="fa-solid fa-plus"></i> Agregar sección</button>
+      <div class="hint">
+        <b>Todo se edita desde el panel "Rápido"</b> de la derecha: hacé clic en algo de la página y aparecen sus opciones.<br>
+        <b>Texto:</b> doble clic y escribí.<br>
+        <b>Carrusel:</b> elegí una foto y tocá el botón <b>+</b> de su barrita para sumar diapositivas.<br>
+        <b>Mover:</b> con algo elegido usá las flechas ↑ ↓ de su barrita.
+      </div>
+      <div class="panel-title">Bloques para arrastrar</div>
+      <div id="blocks"></div>
+    </aside>
+
+    <main id="gjs"></main>
+
+    <aside id="right">
+      <div class="tabs">
+        <button data-tab="quick" class="active">Rápido</button>
+        <button data-tab="styles">Más estilos</button>
+        <button data-tab="layers">Estructura</button>
+      </div>
+      <div id="selectors"></div>
+      <div id="quick">
+        <div id="qk-body"></div>
+        <details class="adv"><summary>Opciones avanzadas</summary><div id="traits"></div></details>
+      </div>
+      <div id="styles"></div>
+      <div id="layers"></div>
+    </aside>
+  </div>
+
+  <div id="tpl-modal" hidden>
+    <div class="tpl-box">
+      <div class="tpl-head"><h2>Agregar sección</h2><button id="tpl-close" title="Cerrar"><i class="fa-solid fa-xmark"></i></button></div>
+      <div class="tpl-filters" id="tpl-filters"></div>
+      <div class="tpl-grid" id="tpl-grid"></div>
+      <div class="tpl-foot" id="tpl-foot"></div>
+    </div>
+  </div>
+
+  <div id="pub-modal" hidden>
+    <div class="tpl-box" style="width:min(560px,100%)">
+      <div class="tpl-head"><h2>Publicar los cambios</h2><button id="pub-close" title="Cerrar"><i class="fa-solid fa-xmark"></i></button></div>
+      <div class="pub-body">
+        <p>Se va a actualizar el <b>sitio real</b> con lo que ves ahora. Tarda 1 o 2 minutos en verse. Siempre podés volver atrás desde <b>Versiones</b>.</p>
+        <label for="pub-note">¿Qué cambiaste? (opcional)</label>
+        <input id="pub-note" type="text" maxlength="80" placeholder="Ej: cambié las tarifas" autocomplete="off">
+        <button class="btn primary" id="pub-go"><i class="fa-solid fa-cloud-arrow-up"></i> Publicar ahora</button>
+        <div id="pub-msg"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="ver-modal" hidden>
+    <div class="tpl-box" style="width:min(620px,100%)">
+      <div class="tpl-head"><h2>Versiones publicadas</h2><button id="ver-close" title="Cerrar"><i class="fa-solid fa-xmark"></i></button></div>
+      <div class="pub-body">
+        <p>Elegí una versión para cargarla en el editor. Primero la revisás, y recién cuando tocás <b>Publicar</b> queda en el sitio.</p>
+        <div class="ver-list" id="ver-list">Cargando…</div>
+        <div id="ver-msg"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="login-modal" hidden>
+    <div class="tpl-box" style="width:min(420px,100%)">
+      <div class="tpl-head"><h2>Ingresar al editor</h2></div>
+      <div class="pub-body">
+        <p>Escribí la contraseña para editar el sitio.</p>
+        <input id="login-pass" type="password" placeholder="Contraseña" autocomplete="current-password">
+        <button class="btn primary" id="login-go"><i class="fa-solid fa-right-to-bracket"></i> Ingresar</button>
+        <div id="login-msg"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/grapesjs@0.23.6/dist/grapes.min.js" integrity="sha384-G8xsNrgjo5FhH6KRYfNNqPQJIX+CqzulP/0k3U+DAYwXrjv4nQt9EdKRLLq/gqRd" crossorigin="anonymous"></script>
+  <script src="app.js"></script>
+</body>
+</html>

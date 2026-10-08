@@ -1,0 +1,36 @@
+/* Sub-carrusel de imágenes dentro de un slide, SOLO en mobile */
+@media (max-width: 639px) {
+  .multi-img-wrap {
+    position: relative;
+  }
+  .multi-img-wrap .sub-img {
+    position: absolute !important;
+    inset: 0;
+    width: 100% !important;
+    height: 100%;
+    opacity: 0;
+  }
+
+  .multi-img-wrap.group-2 .sub-img {
+    animation: subimgCycle2 6s infinite ease-in-out;
+  }
+  .multi-img-wrap.group-3 .sub-img {
+    animation: subimgCycle3 9s infinite ease-in-out;
+  }
+}
+
+@keyframes subimgCycle2 {
+  0%   { opacity: 0; }
+  3%   { opacity: 1; }
+  47%  { opacity: 1; }
+  50%  { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+@keyframes subimgCycle3 {
+  0%     { opacity: 0; }
+  2%     { opacity: 1; }
+  31%    { opacity: 1; }
+  33.33% { opacity: 0; }
+  100%   { opacity: 0; }
+}
