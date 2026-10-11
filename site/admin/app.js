@@ -202,9 +202,6 @@
         assetManager: {
           embedAsBase64: true,
           assets: IMAGES.map((n) => ({ type: 'image', src: img(n), name: n })),
-          modalTitle: 'Elegí una imagen',
-          uploadText: 'Arrastrá una imagen acá o hacé clic para subir una',
-          addBtnText: 'Agregar por link',
           uploadFile: async (e) => {
             const files = e.dataTransfer ? e.dataTransfer.files : e.target.files;
             const added = [];
@@ -235,9 +232,24 @@
               properties: [
                 { extend: 'font-family', label: 'Tipo de letra', options: fontOptions },
                 { extend: 'font-size', label: 'Tamaño' },
-                { extend: 'font-weight', label: 'Grosor' },
+                {
+                  extend: 'font-weight',
+                  label: 'Grosor',
+                  options: [
+                    { id: '100', value: '100', label: 'Muy fina' }, { id: '300', value: '300', label: 'Fina' }, { id: '400', value: '400', label: 'Normal' },
+                    { id: '500', value: '500', label: 'Media' }, { id: '600', value: '600', label: 'Seminegrita' }, { id: '700', value: '700', label: 'Negrita' },
+                    { id: '800', value: '800', label: 'Extra negrita' }, { id: '900', value: '900', label: 'Muy gruesa' }
+                  ]
+                },
                 { extend: 'color', label: 'Color de texto' },
-                { extend: 'text-align', label: 'Alineación' },
+                {
+                  extend: 'text-align',
+                  label: 'Alineación',
+                  options: [
+                    { id: 'left', value: 'left', label: 'Izquierda' }, { id: 'center', value: 'center', label: 'Centro' },
+                    { id: 'right', value: 'right', label: 'Derecha' }, { id: 'justify', value: 'justify', label: 'Justificado' }
+                  ]
+                },
                 { extend: 'line-height', label: 'Interlineado' },
                 { extend: 'letter-spacing', label: 'Espaciado de letras' }
               ]
@@ -250,15 +262,63 @@
             {
               name: 'Espaciado',
               open: false,
-              properties: [{ extend: 'margin', label: 'Margen exterior' }, { extend: 'padding', label: 'Margen interior' }]
+              properties: [
+                {
+                  extend: 'margin',
+                  label: 'Margen exterior',
+                  properties: [
+                    { extend: 'margin-top', label: 'Arriba' }, { extend: 'margin-right', label: 'Derecha' },
+                    { extend: 'margin-bottom', label: 'Abajo' }, { extend: 'margin-left', label: 'Izquierda' }
+                  ]
+                },
+                {
+                  extend: 'padding',
+                  label: 'Margen interior',
+                  properties: [
+                    { extend: 'padding-top', label: 'Arriba' }, { extend: 'padding-right', label: 'Derecha' },
+                    { extend: 'padding-bottom', label: 'Abajo' }, { extend: 'padding-left', label: 'Izquierda' }
+                  ]
+                }
+              ]
             },
             {
               name: 'Bordes y sombra',
               open: false,
               properties: [
-                { extend: 'border-radius', label: 'Bordes redondeados' },
-                { extend: 'border', label: 'Borde' },
-                { extend: 'box-shadow', label: 'Sombra' }
+                {
+                  extend: 'border-radius',
+                  label: 'Bordes redondeados',
+                  properties: [
+                    { extend: 'border-top-left-radius', label: 'Arriba izq.' }, { extend: 'border-top-right-radius', label: 'Arriba der.' },
+                    { extend: 'border-bottom-left-radius', label: 'Abajo izq.' }, { extend: 'border-bottom-right-radius', label: 'Abajo der.' }
+                  ]
+                },
+                {
+                  extend: 'border',
+                  label: 'Borde',
+                  properties: [
+                    { extend: 'border-width', label: 'Grosor' },
+                    {
+                      extend: 'border-style',
+                      label: 'Estilo',
+                      options: [
+                        { id: 'none', value: 'none', label: 'Sin borde' }, { id: 'solid', value: 'solid', label: 'Lleno' },
+                        { id: 'dashed', value: 'dashed', label: 'Rayado' }, { id: 'dotted', value: 'dotted', label: 'Punteado' }
+                      ]
+                    },
+                    { extend: 'border-color', label: 'Color' }
+                  ]
+                },
+                {
+                  extend: 'box-shadow',
+                  label: 'Sombra',
+                  properties: [
+                    { extend: 'box-shadow-h', label: 'Horizontal' }, { extend: 'box-shadow-v', label: 'Vertical' },
+                    { extend: 'box-shadow-blur', label: 'Desenfoque' }, { extend: 'box-shadow-spread', label: 'Expansión' },
+                    { extend: 'box-shadow-color', label: 'Color' },
+                    { extend: 'box-shadow-type', label: 'Tipo', options: [{ id: '', value: '', label: 'Exterior' }, { id: 'inset', value: 'inset', label: 'Interior' }] }
+                  ]
+                }
               ]
             },
             {
@@ -276,7 +336,33 @@
           locale: 'es',
           messages: {
             es: {
-              styleManager: { empty: 'Hacé clic en cualquier texto, imagen o sección de la página para editarla.' },
+              assetManager: {
+                addButton: 'Agregar por link',
+                inputPlh: 'https://… (link de la imagen)',
+                modalTitle: 'Elegí una imagen',
+                uploadTitle: 'Arrastrá una imagen acá o hacé clic para subir una'
+              },
+              domComponents: {
+                names: {
+                  '': 'Bloque', wrapper: 'Página', text: 'Texto', image: 'Imagen', video: 'Video', link: 'Enlace', map: 'Mapa', label: 'Etiqueta',
+                  section: 'Sección', div: 'Bloque', header: 'Encabezado', footer: 'Pie de página', nav: 'Menú', main: 'Contenido', article: 'Artículo',
+                  h1: 'Título', h2: 'Título', h3: 'Título', h4: 'Título', h5: 'Título', h6: 'Título', p: 'Párrafo', span: 'Texto', a: 'Enlace o botón',
+                  button: 'Botón', img: 'Imagen', ul: 'Lista', ol: 'Lista numerada', li: 'Ítem de lista', i: 'Ícono', iframe: 'Video o mapa',
+                  details: 'Pregunta desplegable', summary: 'Pregunta', strong: 'Texto en negrita', em: 'Texto en cursiva'
+                }
+              },
+              styleManager: {
+                empty: 'Hacé clic en cualquier texto, imagen o sección de la página para editarla.',
+                properties: {
+                  'margin-top': 'Arriba', 'margin-right': 'Derecha', 'margin-bottom': 'Abajo', 'margin-left': 'Izquierda',
+                  'padding-top': 'Arriba', 'padding-right': 'Derecha', 'padding-bottom': 'Abajo', 'padding-left': 'Izquierda',
+                  'border-top-left-radius': 'Arriba izq.', 'border-top-right-radius': 'Arriba der.',
+                  'border-bottom-left-radius': 'Abajo izq.', 'border-bottom-right-radius': 'Abajo der.',
+                  'border-width': 'Grosor', 'border-style': 'Estilo', 'border-color': 'Color',
+                  'box-shadow-h': 'Horizontal', 'box-shadow-v': 'Vertical', 'box-shadow-blur': 'Desenfoque', 'box-shadow-spread': 'Expansión',
+                  'box-shadow-color': 'Color', 'box-shadow-type': 'Tipo'
+                }
+              },
               traitManager: {
                 empty: 'Hacé clic en un elemento de la página.',
                 traits: {
@@ -314,6 +400,19 @@
       const head = (eb, title, dark) =>
         `<div class="text-center mb-10"><span class="${eyebrow}">${eb}</span><h2 class="${h2base} ${dark ? 'text-white' : 'text-stone-900'}">${title}</h2></div>`;
       const stars = '<div class="text-brand-gold text-xl mb-3"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>';
+
+      const VIDEO_PLACEHOLDER =
+        '<div class="js-video-empty aspect-video flex items-center justify-center text-center p-6 text-stone-400"><div><i class="fa-brands fa-youtube text-6xl text-red-500"></i>' +
+        '<p class="mt-4 text-base">Pegá el link de YouTube en el panel <b>Rápido</b> (a la derecha) para mostrar tu video acá.</p></div></div>';
+      const videoFrame = (id) =>
+        '<iframe src="https://www.youtube-nocookie.com/embed/' + id + '" title="Video de YouTube" class="w-full aspect-video" loading="lazy" ' +
+        'allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>';
+      const youtubeId = (text) => {
+        const t = String(text).trim();
+        if (/^[\w-]{11}$/.test(t)) return t;
+        const m = t.match(/(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:watch\?(?:[^#\s]*&)?v=|embed\/|shorts\/|live\/|v\/))([\w-]{11})/);
+        return m ? m[1] : null;
+      };
 
       const photoSlide = (n, t, d) =>
         `<div class="cr-slide relative shrink-0 w-full snap-center h-[340px] sm:h-[480px]"><img src="${img(n)}" alt="${t}" class="absolute inset-0 w-full h-full object-cover">` +
@@ -385,9 +484,9 @@
         { id: 'promo-banner', cat: 'Promociones', name: 'Banner de promoción', desc: 'Cartel destacado con etiqueta, título, descuento y botón.',
           wire: wf(R(8, 20, 144, 60, GRN, 10), R(16, 30, 24, 6, GOLD), R(16, 42, 72, 8, '#fff'), R(16, 56, 52, 3, '#a8c7b5'), R(16, 64, 30, 8, ACC, 4), R(110, 36, 32, 18, GOLD), R(108, 60, 36, 3, '#a8c7b5')),
           html: `<section class="py-10 bg-stone-100"><div class="max-w-6xl mx-auto px-4"><div class="js-bg-target relative overflow-hidden rounded-3xl shadow-2xl bg-gradient-to-r from-brand-darkgreen via-brand-green to-brand-lightgreen text-white"><img src="${img('PuertaCamping.jfif')}" alt="Fondo" class="js-bg-photo absolute inset-0 w-full h-full object-cover opacity-25"><div class="relative grid md:grid-cols-3 gap-6 items-center p-8 sm:p-12"><div class="md:col-span-2"><span class="inline-block bg-brand-gold text-stone-900 font-extrabold text-xs px-3 py-1 rounded-full uppercase tracking-wider">Promoción</span><h2 class="${h2base} text-white">Título de la promo</h2><p class="mt-3 text-white/85 max-w-xl">Contá en una o dos líneas de qué trata la promoción y hasta cuándo está vigente.</p><a href="https://wa.me/5492604321990" target="_blank" class="mt-6 ${btn.replace('bg-brand-green', 'bg-brand-accent')}">Quiero aprovecharla</a></div><div class="text-center"><div class="text-6xl font-extrabold text-brand-gold">20%</div><p class="text-sm uppercase tracking-widest text-white/80">de descuento</p></div></div></div></div></section>` },
-        { id: 'promo-video', cat: 'Promociones', name: 'Video promocional', desc: 'Reproductor de video con título. Pegás el link del video en el panel Rápido.',
+        { id: 'promo-video', cat: 'Promociones', name: 'Video de YouTube', desc: 'Muestra un video de YouTube con título. Pegás el link en el panel Rápido.',
           wire: wf(R(20, 12, 120, 66, '#1c1917', 8), '<polygon points="72,34 72,56 92,45" fill="#fff"/>', R(48, 84, 64, 4, TXT)),
-          html: `<section class="py-16 bg-stone-900 text-white"><div class="max-w-4xl mx-auto px-4">${head('Mirá el video', 'Título del video', true)}<div class="rounded-3xl overflow-hidden shadow-2xl border border-white/10 bg-black"><video controls playsinline preload="metadata" poster="${img('PuertaCamping.jfif')}" class="w-full aspect-video"></video></div><p class="text-center text-stone-400 text-sm mt-4">Texto debajo del video (opcional).</p></div></section>` },
+          html: `<section class="py-16 bg-stone-900 text-white"><div class="max-w-4xl mx-auto px-4">${head('Mirá el video', 'Título del video', true)}<div class="js-video-slot rounded-3xl overflow-hidden shadow-2xl border border-white/10 bg-black">${VIDEO_PLACEHOLDER}</div><p class="text-center text-stone-400 text-sm mt-4">Texto debajo del video (opcional).</p></div></section>` },
         { id: 'cta', cat: 'Reservas y contacto', name: 'Llamado a reservar', desc: 'Franja dorada con botón de WhatsApp.',
           wire: wf(R(0, 26, 160, 48, GOLD, 0), R(46, 36, 68, 7, DARK), R(54, 49, 52, 3, '#78580e'), R(56, 58, 48, 9, GRN, 5)),
           html: `<section class="py-16 bg-brand-gold text-stone-900 text-center"><div class="max-w-3xl mx-auto px-4"><h2 class="text-3xl font-extrabold font-serif">¿Listo para acampar?</h2><p class="mt-3">Escribinos y consultá disponibilidad.</p><a href="https://wa.me/5492604321990" target="_blank" class="mt-6 ${btn}"><i class="fa-brands fa-whatsapp"></i> Consultar por WhatsApp</a></div></section>` },
@@ -454,7 +553,6 @@
       }
       function openModal() { renderModal(); $('tpl-modal').hidden = false; }
       function closeModal() { $('tpl-modal').hidden = true; }
-      $('b-add').onclick = openModal;
       $('b-add-left').onclick = openModal;
       $('tpl-close').onclick = closeModal;
       $('tpl-modal').addEventListener('click', (e) => { if (e.target === $('tpl-modal')) closeModal(); });
@@ -527,12 +625,20 @@
       const TEXT_TAGS = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span', 'a', 'li', 'button', 'summary', 'label', 'strong', 'em'];
       const tagOf = (c) => String(c.get('tagName') || '').toLowerCase();
       const isImage = (c) => c.get('type') === 'image';
-      const isVideo = (c) => c.get('type') === 'video';
-      const isTextual = (c) => !isImage(c) && !isVideo(c) && c.get('type') !== 'textnode' && (c.is('text') || c.is('link') || TEXT_TAGS.includes(tagOf(c)));
+      const isTextual = (c) => !isImage(c) && c.get('type') !== 'textnode' && (c.is('text') || c.is('link') || TEXT_TAGS.includes(tagOf(c)));
+      function withClass(comp, cls) {
+        let c = comp;
+        while (c) {
+          if (c.getClasses && c.getClasses().includes(cls)) return c;
+          c = c.parent();
+        }
+        return null;
+      }
       function friendly(c) {
         const t = tagOf(c);
         if (isImage(c)) return 'Imagen';
-        if (isVideo(c)) return 'Video';
+        if (t === 'iframe') return withClass(c, 'js-video-slot') ? 'Video de YouTube' : 'Mapa o contenido incrustado';
+        if (c.getClasses && c.getClasses().includes('js-video-slot')) return 'Video de YouTube';
         if (t === 'a') return 'Botón o enlace';
         if (/^h[1-6]$/.test(t)) return 'Título';
         if (t === 'p') return 'Párrafo';
@@ -605,16 +711,25 @@
           on('qk-target', 'change', (e) => (e.target.value ? sel.addAttributes({ target: e.target.value }) : sel.removeAttributes('target')));
         }
 
-        if (isVideo(sel)) {
-          h += '<div class="qk-card"><div class="qk-title">Video</div><label for="qk-vsrc">Link del video</label><input type="text" id="qk-vsrc" placeholder="Link de YouTube o archivo .mp4" value="' + esc(sel.get('src') || sel.getAttributes().src) + '">' +
-            '<button class="qk-btn sec" id="qk-poster"><i class="fa-solid fa-image"></i> Cambiar imagen de portada</button><small>Pegá el link y apretá Enter. Más opciones (autoplay, repetir, sin sonido) en "Opciones avanzadas".</small></div>';
-          on('qk-vsrc', 'change', (e) => {
-            const v = e.target.value.trim();
-            const yt = v.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{6,})/);
-            if (yt) { sel.set({ provider: 'yt', videoId: yt[1] }); }
-            else { sel.set({ provider: 'so' }); sel.set('src', v); sel.addAttributes({ src: v }); }
+        const slot = withClass(sel, 'js-video-slot') || (sec && sec.find('.js-video-slot')[0]);
+        if (slot) {
+          const frame = slot.components().filter((c) => tagOf(c) === 'iframe' || c.get('type') === 'video')[0];
+          const curId = frame && (frame.get('videoId') || (String(frame.getAttributes().src || '').match(/\/embed\/([\w-]{11})/) || [])[1]);
+          h += '<div class="qk-card"><div class="qk-title">Video de YouTube</div><label for="qk-yt">Link del video</label>' +
+            '<input type="text" id="qk-yt" placeholder="https://www.youtube.com/watch?v=…" value="' + esc(curId ? 'https://youtu.be/' + curId : '') + '">' +
+            '<div id="qk-yt-msg"></div><small>Subí tu video a YouTube (es gratis), copiá el link y pegalo acá. Se reproduce desde YouTube, así la página no se vuelve pesada. Apretá Enter para aplicar.</small>' +
+            (curId ? '<button class="qk-btn sec danger" id="qk-ytclear"><i class="fa-solid fa-trash"></i> Quitar el video</button>' : '') + '</div>';
+          on('qk-yt', 'change', (e) => {
+            const id = youtubeId(e.target.value);
+            if (!id) {
+              $('qk-yt-msg').className = 'qk-err';
+              $('qk-yt-msg').textContent = 'Ese link no parece ser de un video de YouTube. Copialo desde la barra de direcciones o con "Compartir".';
+              return;
+            }
+            slot.components(videoFrame(id));
+            renderQuick();
           });
-          on('qk-poster', 'click', () => pickImage((src) => { sel.set('poster', src); sel.addAttributes({ poster: src }); }));
+          on('qk-ytclear', 'click', () => { slot.components(VIDEO_PLACEHOLDER); renderQuick(); });
         }
 
         if (targets.length) {

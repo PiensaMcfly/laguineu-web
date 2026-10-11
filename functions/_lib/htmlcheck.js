@@ -1,5 +1,9 @@
 const ALLOWED_SCRIPTS = new Set(['vendor/tailwind-3.4.17.js', 'Src/tw-config.js', 'Src/site.js']);
-const ALLOWED_FRAMES = [/^https:\/\/www\.google\.com\/maps\/embed(\?|$)/, /^https:\/\/www\.youtube\.com\/embed\//, /^https:\/\/player\.vimeo\.com\/video\//];
+const ALLOWED_FRAMES = [
+  /^https:\/\/www\.google\.com\/maps\/embed(\?|$)/,
+  /^https:\/\/www\.youtube-nocookie\.com\/embed\/[\w-]{11}(\?|$)/,
+  /^https:\/\/www\.youtube\.com\/embed\/[\w-]{11}(\?|$)/
+];
 
 const attr = (tag, name) => {
   const m = tag.match(new RegExp('\\s' + name + '\\s*=\\s*("([^"]*)"|\'([^\']*)\'|([^\\s>]+))', 'i'));
@@ -18,7 +22,7 @@ export function htmlProblems(text) {
     const src = attr(tag, 'src');
     if (!src || !ALLOWED_SCRIPTS.has(src)) return 'La página tiene un script no permitido.';
   }
-  if (/<\s*(object|embed|base|form|applet)\b/i.test(text)) return 'La página tiene elementos no permitidos.';
+  if (/<\s*(object|embed|base|form|applet|video|audio)\b/i.test(text)) return 'La página tiene elementos no permitidos.';
   if (/<\s*meta\b[^>]*http-equiv\s*=\s*["']?\s*refresh/i.test(text)) return 'La página tiene una redirección no permitida.';
   if (/[\s"'/]on[a-z]{3,}\s*=/i.test(text)) return 'La página tiene atributos de eventos no permitidos.';
   if (/(href|src|action|formaction|xlink:href)\s*=\s*["']?\s*(javascript|vbscript|data\s*:\s*text\/html)/i.test(text)) return 'La página tiene enlaces no permitidos.';

@@ -75,7 +75,9 @@
     .font-item small { margin: 0; font: 600 10.5px var(--gjs-main-font); color: inherit; opacity: .65; white-space: nowrap; }
     details.adv { margin: 8px 12px 16px; background: rgba(255,255,255,.04); border-radius: 12px; padding: 4px 12px; }
     details.adv summary { cursor: pointer; padding: 8px 0; font-size: 12.5px; font-weight: 700; color: #a8a29e; }
-    .gjs-blocks-c { display: grid !important; grid-template-columns: 1fr 1fr; gap: 8px; padding: 8px 10px 14px; }
+    .gjs-blocks-c { grid-template-columns: 1fr 1fr; gap: 8px; padding: 8px 10px 14px; }
+    .gjs-blocks-c:not([style*="none"]) { display: grid !important; }
+    .gjs-block-category .gjs-title { cursor: pointer; user-select: none; }
     .gjs-block { width: auto !important; min-height: 84px !important; margin: 0 !important; padding: 10px 6px !important; border: 1px solid rgba(255,255,255,.12) !important; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; box-shadow: none !important; }
     .gjs-block:hover { border-color: #38b000 !important; background: rgba(56,176,0,.12); }
     .gjs-block__media i { font-size: 22px; color: #e9a825; margin-bottom: 6px; display: block; }
@@ -87,6 +89,7 @@
     .btn.add { background: #e9a825; border-color: #e9a825; color: #1c1917; font-weight: 800; }
     .btn.add:hover { background: #f2b93d; }
     .btn.add.big { width: calc(100% - 24px); margin: 4px 12px 10px; justify-content: center; padding: 12px; font-size: 14px; }
+    .btn.side { width: calc(100% - 24px); margin: 0 12px 10px; justify-content: center; }
     .tpl-mini { width: 100%; }
     .tpl-mini svg, .tpl-thumb svg { display: block; width: 100%; height: auto; border-radius: 8px; }
     .gjs-block__media { width: 100%; }
@@ -107,6 +110,9 @@
     .pub-body summary { cursor: pointer; font-weight: 700; }
     .pub-body ol { margin: 8px 0 0; padding-left: 20px; }
     .pub-body .btn { margin-top: 14px; }
+    .pub-warn { display: flex; gap: 8px; align-items: flex-start; margin-top: 8px; padding: 9px 11px; border-radius: 9px; background: rgba(233,168,37,.16); color: #f4d78f; font-size: 12px; line-height: 1.45; }
+    .pub-warn i { margin-top: 2px; }
+    #qk-yt-msg.qk-err { color: #ff9c92; font-size: 12px; margin-top: 6px; line-height: 1.4; }
     #pub-msg { margin-top: 12px; font-weight: 600; }
     #pub-msg.err { color: #ff8a80; }
     #pub-msg.ok { color: #7bd88f; }
@@ -128,9 +134,7 @@
 <body>
   <div id="app">
     <header id="topbar">
-      <div class="brand"><i class="fa-solid fa-tree" style="color:#38b000"></i> Editor La Guineu <small>prototipo</small></div>
-      <button class="btn add" id="b-add" title="Agregar una sección nueva"><i class="fa-solid fa-plus"></i> Agregar sección</button>
-      <div class="sep"></div>
+      <div class="brand"><i class="fa-solid fa-tree" style="color:#38b000"></i> Editor La Guineu</div>
       <button class="btn" id="b-undo" title="Deshacer"><i class="fa-solid fa-rotate-left"></i> Deshacer</button>
       <button class="btn" id="b-redo" title="Rehacer"><i class="fa-solid fa-rotate-right"></i> Rehacer</button>
       <div class="sep"></div>
@@ -142,7 +146,6 @@
       <span id="status">Cargando…</span>
       <button class="btn" id="b-reset" title="Volver a la última versión publicada"><i class="fa-solid fa-arrow-rotate-left"></i> Descartar cambios</button>
       <button class="btn" id="b-preview"><i class="fa-solid fa-eye"></i> Vista previa</button>
-      <button class="btn" id="b-download" title="Guardar una copia en tu computadora"><i class="fa-solid fa-download"></i> Descargar</button>
       <button class="btn" id="b-versions" title="Ver y recuperar versiones anteriores"><i class="fa-solid fa-clock-rotate-left"></i> Versiones</button>
       <button class="btn primary" id="b-publish" title="Publicar los cambios en el sitio"><i class="fa-solid fa-cloud-arrow-up"></i> Publicar</button>
       <button class="btn" id="b-logout" title="Cerrar sesión"><i class="fa-solid fa-right-from-bracket"></i></button>
@@ -151,6 +154,7 @@
     <aside id="left">
       <div class="panel-title">Secciones</div>
       <button class="btn add big" id="b-add-left"><i class="fa-solid fa-plus"></i> Agregar sección</button>
+      <button class="btn side" id="b-download" title="Guardar una copia de la página en tu computadora"><i class="fa-solid fa-download"></i> Descargar copia</button>
       <div class="hint">
         <b>Todo se edita desde el panel "Rápido"</b> de la derecha: hacé clic en algo de la página y aparecen sus opciones.<br>
         <b>Texto:</b> doble clic y escribí.<br>
@@ -195,6 +199,7 @@
         <p>Se va a actualizar el <b>sitio real</b> con lo que ves ahora. Tarda 1 o 2 minutos en verse. Siempre podés volver atrás desde <b>Versiones</b>.</p>
         <label for="pub-note">¿Qué cambiaste? (opcional)</label>
         <input id="pub-note" type="text" maxlength="80" placeholder="Ej: cambié las tarifas" autocomplete="off">
+        <div class="pub-warn"><i class="fa-solid fa-triangle-exclamation"></i> <span>Esta nota queda guardada en un historial <b>público</b>. No escribas contraseñas, teléfonos, datos personales ni información sensible.</span></div>
         <button class="btn primary" id="pub-go"><i class="fa-solid fa-cloud-arrow-up"></i> Publicar ahora</button>
         <div id="pub-msg"></div>
       </div>
