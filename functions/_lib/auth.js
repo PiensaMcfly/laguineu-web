@@ -26,8 +26,16 @@ export const json = (data, status = 200, headers = {}) =>
     headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', ...headers }
   });
 
-export const configured = (env) =>
-  !!(env.SESSION_SECRET && env.SESSION_SECRET.length >= 32 && env.ADMIN_PASSWORD && env.ADMIN_PASSWORD.length >= 12);
+export function configProblems(env) {
+  const out = [];
+  if (!env.ADMIN_PASSWORD) out.push('ADMIN_PASSWORD no está cargada');
+  else if (env.ADMIN_PASSWORD.length < 12) out.push('ADMIN_PASSWORD es demasiado corta (mínimo 12 caracteres)');
+  if (!env.SESSION_SECRET) out.push('SESSION_SECRET no está cargada');
+  else if (env.SESSION_SECRET.length < 32) out.push('SESSION_SECRET es demasiado corta (mínimo 32 caracteres)');
+  return out;
+}
+
+export const configured = (env) => configProblems(env).length === 0;
 
 export function sameOrigin(request) {
   const origin = request.headers.get('Origin');

@@ -108,7 +108,7 @@
       $('login-modal').hidden = false;
       if (info.configured === false) {
         $('login-msg').className = 'err';
-        $('login-msg').textContent = 'El servidor todavía no está configurado (faltan la contraseña y la clave en Cloudflare).';
+        $('login-msg').textContent = 'El servidor todavía no está configurado en Cloudflare: ' + ((info.problems || []).join('; ') || 'faltan variables') + '.';
       }
       $('login-pass').focus();
       await new Promise((resolve) => {
@@ -121,7 +121,7 @@
             const body = await res.json().catch(() => ({}));
             if (res.ok) { $('login-modal').hidden = true; return resolve(); }
             $('login-msg').className = 'err';
-            $('login-msg').textContent = body.error || 'No se pudo ingresar.';
+            $('login-msg').textContent = (body.error || 'No se pudo ingresar.') + (body.problems && body.problems.length ? ' ' + body.problems.join('; ') + '.' : '');
           } catch (e) {
             $('login-msg').className = 'err';
             $('login-msg').textContent = 'No hay conexión con el servidor.';

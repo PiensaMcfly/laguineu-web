@@ -1,9 +1,9 @@
-import { json, checkPassword, createSessionCookie, configured, sameOrigin, readJson } from '../_lib/auth.js';
+import { json, checkPassword, createSessionCookie, configured, configProblems, sameOrigin, readJson } from '../_lib/auth.js';
 import { isBlocked, recordFail, clearFails } from '../_lib/ratelimit.js';
 
 export async function onRequestPost({ request, env }) {
   if (!configured(env)) {
-    return json({ error: 'El servidor todavía no está configurado (la contraseña debe tener 12 caracteres o más y la clave interna 32 o más).' }, 503);
+    return json({ error: 'El servidor todavía no está configurado.', problems: configProblems(env) }, 503);
   }
   if (!sameOrigin(request)) return json({ error: 'Solicitud no permitida' }, 403);
   if (await isBlocked(env, request)) return json({ error: 'Demasiados intentos. Esperá 15 minutos e intentá de nuevo.' }, 429);
