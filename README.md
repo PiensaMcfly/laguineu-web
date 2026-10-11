@@ -18,4 +18,4 @@ Landing page del Camping La Guineu (Malargüe, Mendoza) con un editor visual par
 ## Documentación
 
 - [`docs/Guia-del-editor-para-el-cliente.pdf`](docs/Guia-del-editor-para-el-cliente.pdf): guía paso a paso para quien edita la página.
-- [`docs/Guia-tecnica-puesta-en-produccion.pdf`](docs/Guia-tecnica-puesta-en-produccion.pdf): configuración (token, Cloudflare, dominio), mantenimiento, mejoras sugeridas y solución de problemas.
+
