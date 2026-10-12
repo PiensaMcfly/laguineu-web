@@ -424,6 +424,12 @@
       const cardSlide = (n, i) =>
         `<div class="cr-slide shrink-0 w-[85%] sm:w-[48%] lg:w-[32%] snap-start bg-white rounded-3xl overflow-hidden shadow-lg border border-stone-200">` +
         `<img src="${img(n)}" alt="Foto" class="w-full h-52 object-cover"><div class="p-6"><h3 class="text-xl font-bold text-stone-900">Título ${i}</h3><p class="text-stone-600 text-sm mt-2">Descripción corta de esta tarjeta.</p></div></div>`;
+      const galPhoto = (n, g) => `<img src="${img(n)}" alt="Foto del camping"${g ? ` data-g="${g}"` : ''} loading="lazy" class="rounded-2xl w-full h-56 object-cover">`;
+      const galChip = (n, label, active) => `<button type="button" data-gcat="${n}" class="gal-chip${active ? ' is-active' : ''} px-5 py-2 rounded-full text-sm font-bold">${label}</button>`;
+      const revCard = () =>
+        `<div class="bg-stone-50 border border-stone-200 rounded-3xl p-8"><div class="g-rev-stars text-brand-gold text-xl mb-3">★★★★★</div>` +
+        `<p class="g-rev-text text-stone-700 leading-relaxed">“Escribí acá la opinión de un visitante.”</p>` +
+        `<p class="mt-4 font-bold text-brand-green"><span class="g-rev-name">Nombre y apellido</span><span class="g-rev-when block text-stone-400 font-normal text-xs mt-0.5">en Google Maps</span></p></div>`;
       const plan = (name, featured) =>
         `<div class="rounded-3xl p-8 text-center bg-white ${featured ? 'border-2 border-brand-accent shadow-xl' : 'border border-stone-200 shadow-sm'}">` +
         `<h3 class="text-xl font-bold text-stone-900">${name}</h3><div class="text-4xl font-extrabold text-brand-green my-4">$ 0.000</div><p class="text-sm text-stone-500">por noche</p>` +
@@ -451,7 +457,10 @@
           html: `<section class="py-20 bg-stone-900"><div class="max-w-6xl mx-auto px-4"><h2 class="${h2base} text-white text-center mb-10">Nuestra galería</h2><div class="grid sm:grid-cols-3 gap-4">${['Parrilla.jpeg', 'Piletas1.jpeg', 'Hornos1.jfif'].map((n) => `<img src="${img(n)}" alt="Foto" class="rounded-2xl w-full h-64 object-cover">`).join('')}</div></div></section>` },
         { id: 'gallery-mosaic', cat: 'Galerías', name: 'Galería de 6 fotos', desc: 'Cuadrícula de seis fotos para mostrar más lugares.',
           wire: wf(R(40, 8, 80, 6, DARK), R(10, 22, 42, 32, IMG), R(59, 22, 42, 32, IMG), R(108, 22, 42, 32, IMG), R(10, 60, 42, 32, IMG), R(59, 60, 42, 32, IMG), R(108, 60, 42, 32, IMG)),
-          html: `<section class="py-20 bg-white"><div class="max-w-6xl mx-auto px-4">${head('Fotos', 'Un recorrido por el camping')}<div class="grid grid-cols-2 md:grid-cols-3 gap-3">${['Pileta HD.jfif', 'Parrilla.jpeg', 'carpa1.jpg', 'Hornos1.jfif', 'Mesashdlibres.jfif', 'PuertaCamping.jfif'].map((n) => `<img src="${img(n)}" alt="Foto" class="rounded-2xl w-full h-56 object-cover">`).join('')}</div></div></section>` },
+          html: `<section class="gal py-20 bg-white"><div class="max-w-6xl mx-auto px-4">${head('Fotos', 'Un recorrido por el camping')}<div class="gal-grid grid grid-cols-2 md:grid-cols-3 gap-3">${['Pileta HD.jfif', 'Parrilla.jpeg', 'carpa1.jpg', 'Hornos1.jfif', 'Mesashdlibres.jfif', 'PuertaCamping.jfif'].map((n) => galPhoto(n, '')).join('')}</div></div></section>` },
+        { id: 'gallery-cats', cat: 'Galerías', name: 'Galería con categorías', desc: 'Botones para filtrar las fotos (Pileta, Carpas, Baños…) y un "Ver más fotos" para no llenar la página.',
+          wire: wf(R(40, 8, 80, 6, '#fff'), R(14, 20, 26, 9, ACC, 5), R(44, 20, 26, 9, '#d6d3d1', 5), R(74, 20, 26, 9, '#d6d3d1', 5), R(104, 20, 26, 9, '#d6d3d1', 5), R(10, 36, 42, 24, IMG), R(59, 36, 42, 24, IMG), R(108, 36, 42, 24, IMG), R(10, 64, 42, 14, IMG), R(59, 64, 42, 14, IMG), R(108, 64, 42, 14, IMG), R(56, 83, 48, 10, ACC, 5)),
+          html: `<section class="gal py-20 bg-stone-900 text-white"><div class="max-w-6xl mx-auto px-4">${head('Fotos', 'Conocé cada sector', true)}<div class="flex flex-wrap justify-center gap-2 mb-8">${galChip('all', 'Todas', true)}${galChip('1', 'Pileta')}${galChip('2', 'Carpas y fogón')}${galChip('3', 'Parrillas y quinchos')}${galChip('4', 'Baños')}</div><div class="gal-grid grid grid-cols-2 md:grid-cols-3 gap-3" data-limit="6">${[['Pileta HD.jfif', '1'], ['carpa1.jpg', '2'], ['Parrilla.jpeg', '3'], ['Piletas1.jpeg', '1'], ['fogon-noche.jpg', '2'], ['Hornos1.jfif', '3'], ['fogonero.jpg', '2'], ['Mesashdlibres.jfif', '3'], ['banios1hd.jfif', '4'], ['Banios1.jpeg', '4'], ['Banios2.jpeg', '4'], ['PuertaCamping.jfif', '2']].map(([n, g]) => galPhoto(n, g)).join('')}</div><div class="text-center mt-8"><button type="button" class="gal-more ${btn}">Ver más fotos</button></div></div></section>` },
 
         { id: 'hero-image', cat: 'Contenido', name: 'Banner con foto de fondo', desc: 'Foto a pantalla ancha con título, texto y botón encima.',
           wire: wf(R(0, 10, 160, 80, IMG, 0), R(40, 34, 80, 8, '#fff'), R(52, 48, 56, 4, '#e7e5e4'), R(58, 60, 44, 10, ACC, 5)),
@@ -477,6 +486,9 @@
         { id: 'testimonials', cat: 'Contenido', name: 'Opiniones en tarjetas', desc: 'Tres opiniones de visitantes una al lado de otra.',
           wire: wf(R(10, 22, 44, 56, '#fff'), R(59, 22, 44, 56, '#fff'), R(108, 22, 44, 56, '#fff'), R(16, 28, 24, 4, GOLD), R(65, 28, 24, 4, GOLD), R(114, 28, 24, 4, GOLD), R(16, 40, 32, 3, TXT), R(65, 40, 32, 3, TXT), R(114, 40, 32, 3, TXT), R(16, 47, 28, 3, TXT), R(65, 47, 28, 3, TXT), R(114, 47, 28, 3, TXT), R(16, 64, 22, 4, GRN), R(65, 64, 22, 4, GRN), R(114, 64, 22, 4, GRN)),
           html: `<section class="py-20 bg-white"><div class="max-w-6xl mx-auto px-4">${head('Opiniones', 'Lo que dicen nuestros visitantes')}<div class="grid md:grid-cols-3 gap-6">${[1, 2, 3].map(() => `<div class="bg-stone-50 border border-stone-200 rounded-3xl p-8">${stars}<p class="text-stone-700 leading-relaxed">“Escribí acá la opinión de un visitante.”</p><p class="mt-4 font-bold text-brand-green">Nombre y apellido</p></div>`).join('')}</div></div></section>` },
+        { id: 'google-reviews', cat: 'Contenido', name: 'Opiniones de Google Maps', desc: 'Muestra las reseñas del camping en Google (se traen solas si el servidor está conectado a Google; si no, escribís las opiniones a mano).',
+          wire: wf(R(40, 8, 80, 6, DARK), R(52, 18, 56, 4, GOLD), R(10, 28, 44, 48, '#fff'), R(59, 28, 44, 48, '#fff'), R(108, 28, 44, 48, '#fff'), R(16, 34, 24, 4, GOLD), R(65, 34, 24, 4, GOLD), R(114, 34, 24, 4, GOLD), R(16, 46, 32, 3, TXT), R(65, 46, 32, 3, TXT), R(114, 46, 32, 3, TXT), R(16, 53, 28, 3, TXT), R(65, 53, 28, 3, TXT), R(114, 53, 28, 3, TXT), R(16, 66, 22, 4, GRN), R(65, 66, 22, 4, GRN), R(114, 66, 22, 4, GRN), R(40, 82, 80, 10, ACC, 5)),
+          html: `<section class="g-reviews py-20 bg-white"><div class="max-w-6xl mx-auto px-4">${head('Opiniones en Google', 'Lo que dicen quienes nos visitaron')}<p class="g-rev-score text-center text-stone-600 font-semibold -mt-6 mb-8">Opiniones de nuestros visitantes en Google</p><div class="g-rev-list grid md:grid-cols-3 gap-6">${revCard()}${revCard()}${revCard()}</div><div class="text-center mt-10"><a href="https://maps.app.goo.gl/3dxm85EY4sRe4LeTA" target="_blank" rel="noopener noreferrer" class="g-rev-link ${btn}"><i class="fa-brands fa-google"></i> Ver todas las opiniones en Google Maps</a></div></div></section>` },
         { id: 'faq', cat: 'Contenido', name: 'Preguntas frecuentes', desc: 'Preguntas que se abren y cierran al tocarlas.',
           wire: wf(R(40, 10, 80, 6, DARK), R(22, 26, 116, 14, '#fff'), R(22, 46, 116, 14, '#fff'), R(22, 66, 116, 14, '#fff'), R(28, 31, 50, 4, DARK), R(28, 51, 40, 4, DARK), R(28, 71, 56, 4, DARK)),
           html: `<section class="py-20 bg-white"><div class="max-w-3xl mx-auto px-4"><h2 class="${h2base} text-center mb-8 text-stone-900">Preguntas frecuentes</h2>${[1, 2, 3].map((i) => `<details class="border border-stone-200 rounded-2xl p-5 mb-3"><summary class="font-bold cursor-pointer text-stone-900">Pregunta ${i}</summary><p class="mt-3 text-stone-600">Escribí la respuesta acá.</p></details>`).join('')}</div></section>` },
@@ -660,7 +672,22 @@
         c.setStyle(st);
       }
       function setSrc(c, src) { c.set('src', src); c.addAttributes({ src }); }
+      // Al cargar un proyecto guardado se vacía la lista de imágenes: se vuelve a llenar con todas las del proyecto y las de la página.
+      function syncAssets() {
+        const am = editor.AssetManager;
+        const key = (s) => { try { return decodeURI(String(s)); } catch (e) { return String(s); } };
+        const have = new Set(am.getAll().map((a) => key(a.get('src'))));
+        const add = [];
+        const push = (src, name) => { if (src && !have.has(key(src))) { have.add(key(src)); add.push({ type: 'image', src, name }); } };
+        IMAGES.forEach((n) => push(img(n), n));
+        editor.getWrapper().find('img').forEach((c) => {
+          const src = c.get('src') || c.getAttributes().src;
+          if (src && !/^data:/.test(src)) push(src, decodeURIComponent(String(src).split('/').pop()));
+        });
+        if (add.length) am.add(add);
+      }
       function pickImage(onPick) {
+        syncAssets();
         editor.AssetManager.open({
           types: ['image'],
           accept: 'image/*',
@@ -680,6 +707,33 @@
       const computed = (c, prop) => { const el = c.getEl && c.getEl(); return el ? getComputedStyle(el)[prop] : ''; };
       const bgTargetOf = (sec) => (sec.getClasses().includes('js-bg-target') ? sec : sec.find('.js-bg-target')[0] || sec);
       const SIZES = [['Pequeño', '0.875rem'], ['Normal', '1rem'], ['Grande', '1.25rem'], ['Muy grande', '1.75rem'], ['Enorme', '2.5rem'], ['Gigante', '3.5rem']];
+
+      /* ---------- Enlaces a secciones (#) ---------- */
+      const slug = (s) => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 30);
+      const explicitId = (c) => String((c.get('attributes') || {}).id || '');
+      const linkable = () => editor.getWrapper().components().filter((c) => ['section', 'footer'].includes(tagOf(c)));
+      const idTaken = (id, except) => linkable().some((c) => c !== except && explicitId(c) === id);
+      function ensureSectionId(sec) {
+        let id = explicitId(sec);
+        if (id) return id;
+        const base = slug(sectionLabel(sec)) || 'seccion';
+        id = base;
+        for (let i = 2; idTaken(id, sec); i++) id = base + '-' + i;
+        sec.addAttributes({ id });
+        return id;
+      }
+
+      /* ---------- Galerías ---------- */
+      const galChips = (gal) => gal.find('[data-gcat]').filter((c) => c.getAttributes()['data-gcat'] !== 'all');
+      function addGalleryPhoto(grid, from) {
+        const src = from || grid.components().at(grid.components().length - 1);
+        if (!src) return;
+        const copy = src.clone();
+        grid.components().add(copy, { at: src.index() + 1 });
+        editor.select(copy);
+        const el = copy.getEl && copy.getEl();
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
 
       function renderQuick() {
         const box = $('qk-body');
@@ -704,11 +758,63 @@
 
         if (tagOf(sel) === 'a') {
           const a = sel.getAttributes();
-          h += '<div class="qk-card"><div class="qk-title">A dónde lleva</div><label for="qk-href">Enlace</label><input type="text" id="qk-href" placeholder="https://… o #seccion" value="' + esc(a.href) + '">' +
+          const secs = linkable();
+          const here = secs.findIndex((s) => a.href && a.href === '#' + explicitId(s));
+          h += '<div class="qk-card"><div class="qk-title">A dónde lleva</div>' +
+            '<label for="qk-anchor">Llevar a una sección de esta página</label><select id="qk-anchor"><option value="">— Elegir sección —</option>' +
+            secs.map((s, i) => '<option value="' + i + '"' + (i === here ? ' selected' : '') + '>' + esc(sectionLabel(s)) + '</option>').join('') + '</select>' +
+            '<label for="qk-href">O pegá otro enlace</label><input type="text" id="qk-href" placeholder="https://… o #seccion" value="' + esc(a.href) + '">' +
             '<label for="qk-target">Al hacer clic</label><select id="qk-target"><option value="">Abre en la misma pestaña</option><option value="_blank"' + (a.target === '_blank' ? ' selected' : '') + '>Abre en una pestaña nueva</option></select>' +
             '<small>Para cambiar el texto del botón: doble clic sobre él.</small></div>';
+          on('qk-anchor', 'change', (e) => {
+            const s = secs[+e.target.value];
+            if (!s || e.target.value === '') return;
+            sel.addAttributes({ href: '#' + ensureSectionId(s) });
+            sel.removeAttributes('target');
+            renderQuick();
+          });
           on('qk-href', 'change', (e) => sel.addAttributes({ href: e.target.value }));
           on('qk-target', 'change', (e) => (e.target.value ? sel.addAttributes({ target: e.target.value }) : sel.removeAttributes('target')));
+        }
+
+        const gal = withClass(sel, 'gal');
+        if (gal) {
+          const grid = gal.find('.gal-grid')[0];
+          const chips = galChips(gal);
+          const inGrid = grid && (sel === grid || withClass(sel, 'gal-grid'));
+          h += '<div class="qk-card"><div class="qk-title">Galería de fotos</div>';
+          if (isImage(sel) && inGrid) {
+            const cur = sel.getAttributes()['data-g'] || '';
+            if (chips.length) {
+              h += '<label for="qk-gcat">Categoría de esta foto</label><select id="qk-gcat"><option value="">Sin categoría (solo en “Todas”)</option>' +
+                chips.map((c) => { const n = c.getAttributes()['data-gcat']; return '<option value="' + esc(n) + '"' + (n === cur ? ' selected' : '') + '>' + esc(c.getEl() ? c.getEl().textContent.trim() : 'Categoría ' + n) + '</option>'; }).join('') + '</select>';
+              on('qk-gcat', 'change', (e) => (e.target.value ? sel.addAttributes({ 'data-g': e.target.value }) : sel.removeAttributes('data-g')));
+            }
+            h += '<button class="qk-btn sec" id="qk-gadd"><i class="fa-solid fa-plus"></i> Agregar otra foto (copia esta)</button>';
+            on('qk-gadd', 'click', () => addGalleryPhoto(grid, sel));
+          } else if (grid) {
+            h += '<button class="qk-btn" id="qk-gadd"><i class="fa-solid fa-plus"></i> Agregar una foto</button><small>Después hacé clic en la foto nueva para cambiarla' + (chips.length ? ' y elegirle categoría' : '') + '.</small>';
+            on('qk-gadd', 'click', () => addGalleryPhoto(grid));
+          }
+          if (grid && gal.find('.gal-more')[0]) {
+            h += '<label for="qk-glimit">Fotos que se ven al principio</label><input type="number" id="qk-glimit" min="1" max="60" value="' + esc(grid.getAttributes()['data-limit'] || '6') + '">' +
+              '<small>Las demás aparecen al tocar el botón “Ver más fotos”.</small>';
+            on('qk-glimit', 'change', (e) => grid.addAttributes({ 'data-limit': String(Math.max(1, Math.min(60, parseInt(e.target.value, 10) || 6))) }));
+          }
+          if (chips.length) {
+            h += '<button class="qk-btn sec" id="qk-gchip"><i class="fa-solid fa-tag"></i> Agregar una categoría</button>' +
+              '<small>Para cambiar el nombre de una categoría, doble clic sobre ella. A cada foto le elegís su categoría haciendo clic en la foto.</small>';
+            on('qk-gchip', 'click', () => {
+              const last = chips[chips.length - 1];
+              const next = Math.max(...chips.map((c) => parseInt(c.getAttributes()['data-gcat'], 10) || 0)) + 1;
+              const copy = last.clone();
+              copy.addAttributes({ 'data-gcat': String(next) });
+              copy.components('Nueva categoría');
+              last.parent().components().add(copy, { at: last.index() + 1 });
+              editor.select(copy);
+            });
+          }
+          h += '</div>';
         }
 
         const slot = withClass(sel, 'js-video-slot') || (sec && sec.find('.js-video-slot')[0]);
@@ -773,6 +879,24 @@
           on('qk-bgcolor', 'input', (e) => target.addStyle({ 'background-color': e.target.value, 'background-image': 'none' }));
           on('qk-bgreset', 'click', () => { dropStyle(target, ['background-color', 'background-image']); renderQuick(); });
 
+          if (['section', 'footer'].includes(tagOf(sec))) {
+            const sid = explicitId(sec);
+            h += '<div class="qk-card"><div class="qk-title">Enlazar a esta sección</div>' +
+              '<label for="qk-secid">Nombre del enlace</label><input type="text" id="qk-secid" placeholder="ej: tarifas" value="' + esc(sid) + '"><div id="qk-secid-msg"></div>' +
+              '<small>' + (sid ? 'Un botón que lleve acá tiene que apuntar a <b>#' + esc(sid) + '</b>.' : 'Ponele un nombre corto (sin espacios) para poder llevar un botón hasta acá.') +
+              ' Más fácil: elegí un botón y en “Llevar a una sección” seleccionala de la lista.</small></div>';
+            on('qk-secid', 'change', (e) => {
+              const id = slug(e.target.value);
+              if (id && idTaken(id, sec)) {
+                $('qk-secid-msg').className = 'qk-err';
+                $('qk-secid-msg').textContent = 'Ese nombre ya lo usa otra sección. Probá con otro.';
+                return;
+              }
+              if (id) sec.addAttributes({ id });
+              else sec.removeAttributes('id');
+              renderQuick();
+            });
+          }
           h += '<div class="qk-card"><div class="qk-title">Esta sección</div><div class="qk-row">' +
             '<button class="qk-btn sec" id="qk-up"><i class="fa-solid fa-arrow-up"></i> Subir</button><button class="qk-btn sec" id="qk-down"><i class="fa-solid fa-arrow-down"></i> Bajar</button>' +
             '<button class="qk-btn sec" id="qk-dup"><i class="fa-regular fa-copy"></i> Duplicar</button><button class="qk-btn sec danger" id="qk-del"><i class="fa-solid fa-trash"></i> Eliminar</button></div></div>';
@@ -924,6 +1048,7 @@
           if (!h.ok) throw new Error('No se pudo cargar esa versión.');
           editor.setComponents(parseHtml(await h.text()).body);
         }
+        syncAssets();
       }
       $('b-versions').onclick = async () => {
         $('ver-modal').hidden = false;
@@ -985,6 +1110,7 @@
           if (published) editor.loadProjectData(restoreUrls(published.data));
           else editor.setComponents(siteBody);
         }
+        syncAssets();
         editor.runCommand('core:component-outline');
         status.textContent = 'Listo';
       });

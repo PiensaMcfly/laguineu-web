@@ -70,6 +70,86 @@
     });
   });
 
+  /* Galerías con categorías y botón "Ver más" */
+  run(function () {
+    document.querySelectorAll('.gal').forEach(function (gal) {
+      var grid = gal.querySelector('.gal-grid');
+      if (!grid) return;
+      var items = Array.prototype.slice.call(grid.children);
+      var chips = Array.prototype.slice.call(gal.querySelectorAll('[data-gcat]'));
+      var more = gal.querySelector('.gal-more');
+      var cat = 'all';
+      var expanded = false;
+
+      function apply() {
+        var limit = parseInt(grid.getAttribute('data-limit'), 10) || 0;
+        var shown = 0;
+        var cut = 0;
+        items.forEach(function (it) {
+          var hide = !(cat === 'all' || it.getAttribute('data-g') === cat);
+          if (!hide) {
+            if (limit && !expanded && shown >= limit) {
+              hide = true;
+              cut++;
+            } else {
+              shown++;
+            }
+          }
+          it.style.display = hide ? 'none' : '';
+        });
+        if (more) more.style.display = cut ? '' : 'none';
+        chips.forEach(function (c) { c.classList.toggle('is-active', c.getAttribute('data-gcat') === cat); });
+      }
+
+      chips.forEach(function (c) {
+        c.addEventListener('click', function () {
+          cat = c.getAttribute('data-gcat');
+          expanded = false;
+          apply();
+        });
+      });
+      if (more) more.addEventListener('click', function () { expanded = true; apply(); });
+      apply();
+    });
+  });
+
+  /* Opiniones de Google Maps (si el servidor tiene la clave configurada; si no, quedan las que escribió el cliente) */
+  run(function () {
+    var boxes = document.querySelectorAll('.g-reviews');
+    if (!boxes.length) return;
+    fetch('/api/reviews', { credentials: 'omit' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        if (!d || !d.reviews || !d.reviews.length) return;
+        boxes.forEach(function (box) {
+          var list = box.querySelector('.g-rev-list');
+          var model = list && list.firstElementChild;
+          if (!model) return;
+          var cards = d.reviews.map(function (v) {
+            var card = model.cloneNode(true);
+            var set = function (sel, text) {
+              var el = card.querySelector(sel);
+              if (el) el.textContent = text;
+            };
+            set('.g-rev-stars', '★★★★★'.slice(0, v.rating) + '☆☆☆☆☆'.slice(0, 5 - v.rating));
+            set('.g-rev-text', '“' + v.text + '”');
+            set('.g-rev-name', v.author);
+            set('.g-rev-when', v.when);
+            return card;
+          });
+          while (list.firstChild) list.removeChild(list.firstChild);
+          cards.forEach(function (c) { list.appendChild(c); });
+          var score = box.querySelector('.g-rev-score');
+          if (score && d.rating) {
+            score.textContent = '★ ' + String(d.rating).replace('.', ',') + (d.count ? ' · ' + d.count + ' opiniones en Google' : ' en Google');
+          }
+          var link = box.querySelector('.g-rev-link');
+          if (link && /^https:\/\//.test(d.url || '')) link.setAttribute('href', d.url);
+        });
+      })
+      .catch(function () {});
+  });
+
   document.addEventListener('click', function (e) {
     var btn = e.target.closest && e.target.closest('.cr-prev,.cr-next');
     if (!btn) return;

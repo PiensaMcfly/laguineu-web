@@ -34,3 +34,20 @@
   33.33% { opacity: 0; }
   100%   { opacity: 0; }
 }
+
+/* Botones de categorías de las galerías */
+.gal-chip {
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: inherit;
+  transition: background-color 0.2s, color 0.2s;
+}
+.gal-chip.is-active {
+  background: #38b000;
+  border-color: #38b000;
+  color: #fff;
+}
+
+/* Al enlazar a una sección (#), que no quede tapada por el menú fijo */
+section[id] {
+  scroll-margin-top: 5.5rem;
+}

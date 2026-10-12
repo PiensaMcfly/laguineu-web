@@ -4,6 +4,7 @@ import * as session from '../functions/api/session.js';
 import * as publish from '../functions/api/publish.js';
 import * as versions from '../functions/api/versions.js';
 import * as images from '../functions/api/images.js';
+import * as reviews from '../functions/api/reviews.js';
 import { json } from '../functions/_lib/auth.js';
 
 const routes = {
@@ -12,7 +13,8 @@ const routes = {
   '/api/session': session,
   '/api/publish': publish,
   '/api/versions': versions,
-  '/api/images': images
+  '/api/images': images,
+  '/api/reviews': reviews
 };
 const HANDLER_BY_METHOD = { GET: 'onRequestGet', POST: 'onRequestPost' };
 
